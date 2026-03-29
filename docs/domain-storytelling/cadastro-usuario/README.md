@@ -1,0 +1,1 @@
+asta reservada para os rascunhos e diagramas do Egon.io sobre o fluxo de cadastro de usuários.
