@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using GameStore.Domain.ValueObjects;
 
 namespace GameStore.Domain.Entities;
 
@@ -7,39 +8,40 @@ public class User
 {
     public Guid Id { get; private set; }
     public string Name { get; private set; }
-    public string Email { get; private set; }
+    public Email Email { get; private set; }
     public string Password { get; private set; }
+    public string Role { get; private set; }
 
     protected User() { }
 
-    private User(string name, string email, string password)
+    private User(string name, Email email, string password, string role)
     {
         Id = Guid.NewGuid();
         Name = name;
         Email = email;
         Password = password;
+        Role = role;
     }
 
     public static User Create(
         string name,
-        string email,
-        string password)
-    {
-        Validate(name, email, password);
+        Email email,
+        string password,
+        string role = "User")
 
-        return new User(name, email, password);
-    }
-
-    private static void Validate(string name, string email, string passwordHash)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name is required.");
 
-        if (!email.Contains('@'))
-            throw new ArgumentException("Invalid email.");
+        if (string.IsNullOrWhiteSpace(password))
+            throw new ArgumentException("Password is required.");
 
-        if (string.IsNullOrWhiteSpace(passwordHash))
-            throw new ArgumentException("Invalid Password.");
+        if (role != "User" && role != "Admin")
+            throw new ArgumentException("Invalid role.");
+
+        return new User(name, email, password, role);
     }
+
+
 }
 
