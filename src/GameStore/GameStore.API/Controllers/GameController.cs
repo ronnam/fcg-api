@@ -27,10 +27,7 @@ public class GameController : ControllerBase
     {
         try
         {
-            var game = Game.Create(request.Title, request.Price);
-
-            _context.Games.Add(game);
-            await _context.SaveChangesAsync();
+            var game = Game.Create(request.Title, request.Category);
 
             return Ok(GameResponse.FromEntity(game));
         }
