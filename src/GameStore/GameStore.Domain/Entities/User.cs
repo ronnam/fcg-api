@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using GameStore.Domain.ValueObjects;
 
 namespace GameStore.Domain.Entities;

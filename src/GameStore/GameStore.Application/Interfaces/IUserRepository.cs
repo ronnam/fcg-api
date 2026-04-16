@@ -1,5 +1,4 @@
 ﻿using GameStore.Domain.Entities;
-using System.Threading.Tasks;
 
 namespace GameStore.Application.Interfaces
 {
