@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.Domain.ValueObjects
 {
 
     public sealed class Email
     {
-        public string Value { get; }
+        public string Value { get; private set; }
+        protected Email() { }
 
         private Email(string value)
         {
@@ -30,9 +27,8 @@ namespace GameStore.Domain.ValueObjects
 
         public override bool Equals(object? obj)
             => obj is Email other && Value == other.Value;
-
         public override int GetHashCode()
-            => Value.GetHashCode(
+            => Value.GetHashCode();
 
     }
 }
