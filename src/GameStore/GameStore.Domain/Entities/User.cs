@@ -1,5 +1,7 @@
 ﻿using System;
 using GameStore.Domain.ValueObjects;
+using System.Data;
+using System.Linq;
 
 namespace GameStore.Domain.Entities;
 
@@ -35,10 +37,12 @@ public class User
         if (string.IsNullOrWhiteSpace(password))
             throw new ArgumentException("Password is required.");
 
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new ArgumentException("Invalid Password.");
+
         if (role != "User" && role != "Admin")
             throw new ArgumentException("Invalid role.");
 
-        return new User(name, email, password, role);
     }
 
 

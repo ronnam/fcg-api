@@ -3,6 +3,10 @@ using GameStore.Application.Service;
 using GameStore.Infrastructure.Persistence;
 using GameStore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using GameStore.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,7 @@ builder.Services.AddControllers();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<GameStoreDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // DbContext
 builder.Services.AddDbContext<GameStoreDbContext>(options =>

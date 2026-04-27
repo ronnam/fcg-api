@@ -6,39 +6,32 @@ public class Game
 {
     public Guid Id { get; private set; }
     public string Title { get; private set; }
-    public decimal Price { get; private set; }
+    public string Category { get; private set; }
 
     protected Game() { }
 
-    private Game(string title, decimal price)
+    private Game(string title, string category)
     {
         Id = Guid.NewGuid();
         Title = title;
-        Price = price;
+        Category = category;
     }
 
-    public static Game Create(string title, decimal price)
+    public static Game Create(string title, string category)
     {
-        Validate(title, price);
+        Validate(title, category);
 
-        return new Game(title, price);
+        return new Game(title, category);
     }
 
-    public void UpdatePrice(decimal newPrice)
-    {
-        if (newPrice <= 0)
-            throw new ArgumentException("Price must be greater than 0.");
-
-        Price = newPrice;
-    }
-
-    private static void Validate(string title, decimal price)
+    private static void Validate(string title, string category)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Title is required.");
 
-        if (price <= 0)
-            throw new ArgumentException("Invalid price.");
+        if (string.IsNullOrWhiteSpace(category))
+            throw new ArgumentException("Category is required.");
+
     }
 }
 

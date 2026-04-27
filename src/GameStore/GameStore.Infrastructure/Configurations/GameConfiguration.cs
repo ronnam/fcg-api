@@ -16,8 +16,8 @@ public sealed class GameConfiguration : IEntityTypeConfiguration<Game>
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(g => g.Price)
-            .HasPrecision(18, 2);
-
+        builder.Property(g => g.Category)
+            .IsRequired()
+            .HasMaxLength(100);
     }
 }
