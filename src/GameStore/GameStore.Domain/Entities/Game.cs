@@ -1,37 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace GameStore.Domain.Entities;
-
-public class Game
+namespace GameStore.Domain.Entities
 {
-    public Guid Id { get; private set; }
-    public string Title { get; private set; }
-    public string Category { get; private set; }
-
-    protected Game() { }
-
-    private Game(string title, string category)
+    public class Game
     {
-        Id = Guid.NewGuid();
-        Title = title;
-        Category = category;
-    }
+        public Guid Id { get; private set; }
+        public required string Title { get; init; }
+        public required string Category { get; init; }
 
-    public static Game Create(string title, string category)
-    {
-        Validate(title, category);
+        private Game() { }
 
-        return new Game(title, category);
-    }
+        [SetsRequiredMembers]
+        private Game(string title, string category)
+        {
+            Id = Guid.NewGuid();
+            Title = title;
+            Category = category;
+        }
 
-    private static void Validate(string title, string category)
-    {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("Title is required.");
+        public static Game Create(string title, string category)
+        {
+            Validate(title, category);
 
-        if (string.IsNullOrWhiteSpace(category))
-            throw new ArgumentException("Category is required.");
+            return new Game(title, category);
+        }
 
+        private static void Validate(string title, string category)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException("Title is required.");
+
+            if (string.IsNullOrWhiteSpace(category))
+                throw new ArgumentException("Category is required.");
+
+        }
     }
 }
-

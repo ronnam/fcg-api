@@ -16,15 +16,23 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(150);
 
-        builder.Property(u => u.Email)
-            .IsRequired()
-            .HasMaxLength(200);
+        builder.OwnsOne(u => u.Email, email =>
+        {
+            email.Property(e => e.Value)
+                .HasColumnName("Email")
+                .IsRequired()
+                .HasMaxLength(200);
 
-        builder.HasIndex(u => u.Email)
-            .IsUnique();
+            email.HasIndex(e => e.Value)
+                .IsUnique();
+        });
 
-        builder.Property(u => u.Password)
+        builder.Property(u => u.PasswordHash)
             .IsRequired();
+
+        builder.Property(u => u.Role)
+            .IsRequired()
+            .HasMaxLength(20);
     }
 }
 
