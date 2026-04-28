@@ -1,7 +1,7 @@
-﻿using GameStore.Api.DTOS;
+﻿using GameStore.Api.DTOs;
+using GameStore.Api.DTOS;
 using GameStore.API.Security;
 using GameStore.Application.Services;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Api.Controllers;
