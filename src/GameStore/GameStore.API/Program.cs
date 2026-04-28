@@ -3,10 +3,6 @@ using GameStore.Application.Service;
 using GameStore.Infrastructure.Persistence;
 using GameStore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using GameStore.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-
-var builder = WebApplication.CreateBuilder(args);
 
 var builder = WebApplication.CreateBuilder(args);
 

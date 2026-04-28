@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GameStore.Domain.ValueObjects
 {
-
     public sealed class Email
     {
-        public string Value { get; private set; }
-        protected Email() { }
+        public required string Value { get; init; }
+        private Email() { }
 
+        [SetsRequiredMembers]
         private Email(string value)
         {
             Value = value;
@@ -32,4 +33,3 @@ namespace GameStore.Domain.ValueObjects
 
     }
 }
-

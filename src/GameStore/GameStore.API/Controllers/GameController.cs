@@ -23,7 +23,7 @@ public class GameController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> CreateGame(GameRequest request)    
+    public IActionResult CreateGame(GameRequest request)    
     {
         try
         {
