@@ -6,6 +6,8 @@ namespace GameStore.Application.Interfaces
     {
         Task AddAsync(User user);
         Task<User?> GetByEmailAsync(string email);
+        Task<IEnumerable<User>> GetAllAsync();
+        Task<User?> GetByIdAsync(Guid id);
 
     }
 }
