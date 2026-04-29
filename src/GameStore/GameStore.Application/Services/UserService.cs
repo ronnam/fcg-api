@@ -35,6 +35,17 @@ namespace GameStore.Application.Services
 
             return user;
         }
+
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _userRepository.GetAllAsync();
+        }
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
+
+
     }
 }
 

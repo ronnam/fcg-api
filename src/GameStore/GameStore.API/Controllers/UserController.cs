@@ -1,5 +1,7 @@
 ﻿using GameStore.Api.DTOS;
 using GameStore.Application.Services;
+using GameStore.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Api.Controllers
@@ -16,28 +18,39 @@ namespace GameStore.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserRequest request)
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
         {
-            try
-            {
-                var user = await _userService.RegisterAsync(
-                    request.Name,
-                    request.Email,
-                    request.Password
-                );
+            var users = await _userService.GetAllAsync();
 
-                return Ok(new
-                {
-                    user.Id,
-                    user.Name,
-                    Email = user.Email.Value
-                });
-            }
-            catch (ArgumentException ex)
+            var response = users.Select(u => new
             {
-                return BadRequest(new { error = ex.Message });
-            }
+                u.Id,
+                u.Name,
+                Email = u.Email.Value,
+                u.Role
+            });
+
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                Email = user.Email.Value,
+                user.Role
+            });
         }
     }
 }
