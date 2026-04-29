@@ -1,6 +1,7 @@
 ﻿using GameStore.Api.DTOS;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
+using GameStore.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,7 +63,7 @@ namespace GameStore.Api.Controllers
                 var user = await _userService.UpdateByAdminAsync(
                     id,
                     request.Name,
-
+                    request.Email,
                     request.Role
                 );
 
@@ -70,15 +71,20 @@ namespace GameStore.Api.Controllers
                 {
                     user.Id,
                     user.Name,
+                    Email = user.Email.Value,
                     user.Role
                 });
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+
             catch (ArgumentException ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
         }
-
     }
 }
 

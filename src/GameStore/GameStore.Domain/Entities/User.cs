@@ -71,4 +71,8 @@ public class User
 
         Role = role;
     }
+    public void UpdateEmail(Email email)
+    {
+        Email = email;
+    }
 }

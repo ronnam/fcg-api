@@ -46,6 +46,7 @@ namespace GameStore.Application.Services
         public async Task<User> UpdateByAdminAsync(
             Guid userId,
             string name,
+            string email,
             string role)
         {
             var user = await _userRepository.GetByIdAsync(userId);
@@ -57,6 +58,7 @@ namespace GameStore.Application.Services
                 throw new ArgumentException("Invalid role.");
 
             user.UpdateName(name);
+            user.UpdateEmail(Email.Create(email));
             user.UpdateRole(role);
 
             await _userRepository.UpdateAsync(user);
