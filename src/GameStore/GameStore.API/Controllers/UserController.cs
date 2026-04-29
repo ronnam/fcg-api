@@ -1,6 +1,7 @@
 ﻿using GameStore.Api.DTOS;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
+using GameStore.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,6 +55,37 @@ namespace GameStore.Api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateUserByAdmin(Guid id,UpdateUserByAdminRequest request)
+        {
+            try
+            {
+                var user = await _userService.UpdateByAdminAsync(
+                    id,
+                    request.Name,
+                    request.Email,
+                    request.Role
+                );
+
+                return Ok(new
+                {
+                    user.Id,
+                    user.Name,
+                    Email = user.Email.Value,
+                    user.Role
+                });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
@@ -65,6 +97,7 @@ namespace GameStore.Api.Controllers
             _userService.DeleteUser(id);
 
             return NoContent();
+
         }
     }
 }
