@@ -9,6 +9,8 @@ namespace GameStore.Application.Interfaces
         Task<IEnumerable<User>> GetAllAsync();
         Task<User?> GetByIdAsync(Guid id);
 
+        Task DeleteAsync(Guid id);
+
     }
 }
 

@@ -52,6 +52,20 @@ namespace GameStore.Api.Controllers
                 user.Role
             });
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            _userService.DeleteUser(id);
+
+            return NoContent();
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.ValueObjects;
+using System.Threading.Tasks;
 
 namespace GameStore.Application.Services
 {
@@ -45,7 +46,10 @@ namespace GameStore.Application.Services
             return await _userRepository.GetByIdAsync(id);
         }
 
-
+        public void DeleteUser(Guid id)
+        {
+            _userRepository.Delete(id);
+        }
     }
 }
 
