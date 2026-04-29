@@ -14,43 +14,43 @@ namespace GameStore.UnitTests.Catalog
         public void Deve_Criar_Filtro_Quando_Paginacao_E_Termo_Forem_Validos()
         {
             // Arrange & Act
-            var pagina = 1;
-            var tamanhoPagina = 20;
-            var termoBusca = "Zelda";
+            var page = 1;
+            var PageSize = 20;
+            var searchTerm = "Zelda";
 
-            var filtro = new FiltroCatalogo(pagina, tamanhoPagina, termoBusca);
+            var filter = new CatalogFilter(page, PageSize, searchTerm);
 
             // Assert
-            Assert.Equal(1, filtro.Pagina);
-            Assert.Equal(20, filtro.TamanhoPagina);
-            Assert.Equal("Zelda", filtro.TermoBusca);
+            Assert.Equal(1, filter.Page);
+            Assert.Equal(20, filter.PageSize);
+            Assert.Equal("Zelda", filter.SearchTerm);
         }
 
         [Fact]
         public void Nao_Deve_Criar_Filtro_Quando_Pagina_For_Menor_Ou_Igual_A_Zero()
         {
             // Arrange 
-            var paginaValida = 0;
-            var tamanhoPagina = 20;
+            var PageValidate = 0;
+            var PageSize = 20;
 
 
             // Act & Assert
-            Action acao = () => new FiltroCatalogo(paginaValida, tamanhoPagina, "Mario");
+            Action action = () => new CatalogFilter(PageValidate, PageSize, "Mario");
 
-            Assert.Throws<ArgumentException>(acao);
+            Assert.Throws<ArgumentException>(action);
         }
 
         [Fact]
         public void Nao_Deve_Criar_Filtro_Quando_Tamanho_Da_Pagina_For_Maior_Que_O_Limite()
         {
             // Arrange (Proteção contra pedir 1 milhão de registros de uma vez)
-            var pagina = 1;
-            var tamanhoInvalido = 101; // Estou supondo que o limite seja 100 por página.
+            var page = 1;
+            var InvalidSize = 101; // Estou supondo que o limite seja 100 por página.
 
             // Act & Assert
-            Action acao = () => new FiltroCatalogo(pagina, tamanhoInvalido, "RPG");
+            Action action = () => new CatalogFilter(page, InvalidSize, "RPG");
 
-            Assert.Throws<ArgumentException>(acao);
+            Assert.Throws<ArgumentException>(action);
         }
     }
 }
