@@ -34,11 +34,18 @@ namespace GameStore.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+
         public async Task UpdateAsync(User user)
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(Guid id)
+        {
+            var user = await GetByIdAsync(id);
+            _context.Remove(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

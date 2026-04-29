@@ -55,6 +55,7 @@ namespace GameStore.Api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateUserByAdmin(Guid id,UpdateUserByAdminRequest request)
         {
@@ -84,6 +85,19 @@ namespace GameStore.Api.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            _userService.DeleteUser(id);
+
+            return NoContent();
+
         }
     }
 }

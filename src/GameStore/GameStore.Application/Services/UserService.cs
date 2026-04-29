@@ -2,6 +2,7 @@
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.ValueObjects;
+using System.Threading.Tasks;
 
 namespace GameStore.Application.Services
 {
@@ -54,6 +55,7 @@ namespace GameStore.Application.Services
             if (user is null)
                 throw new ArgumentException("User not found.");
 
+
             if (role != "User" && role != "Admin")
                 throw new ArgumentException("Invalid role.");
 
@@ -64,6 +66,11 @@ namespace GameStore.Application.Services
             await _userRepository.UpdateAsync(user);
 
             return user;
+
+        public void DeleteUser(Guid id)
+        {
+            _userRepository.Delete(id);
+
         }
     }
 }
