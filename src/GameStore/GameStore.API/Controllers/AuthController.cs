@@ -1,5 +1,6 @@
 ﻿using GameStore.Api.DTOs;
 using GameStore.Api.DTOS;
+using GameStore.Api.DTOS.Auth;
 using GameStore.API.Security;
 using GameStore.Application.Services;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿namespace GameStore.Api.DTOS
+﻿namespace GameStore.Api.DTOS.Auth
 {
     public record RegisterUserRequest(
         string Name,

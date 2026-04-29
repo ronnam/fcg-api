@@ -75,4 +75,9 @@ public class User
     {
         Email = email;
     }
+
+    public void UpdatePassword(string passwordHash)
+    {
+        PasswordHash = passwordHash;
+    }
 }

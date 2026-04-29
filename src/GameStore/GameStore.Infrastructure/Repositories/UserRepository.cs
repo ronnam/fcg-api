@@ -21,31 +21,24 @@ namespace GameStore.Infrastructure.Repositories
                 .Include(u => u.Email)
                 .FirstOrDefaultAsync(u => u.Email.Value == email);
         }
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users
-                .AsNoTracking()
-                .ToListAsync();
+            return await _context.Users.AsNoTracking().ToListAsync();
         }
-        public async Task<User?> GetByIdAsync(Guid id)
-        {
-            return await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == id);
-        }
-
         public async Task UpdateAsync(User user)
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(User user)
         {
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
-
     }
 }

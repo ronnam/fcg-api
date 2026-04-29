@@ -1,9 +1,11 @@
-﻿using GameStore.Api.DTOS;
+﻿using GameStore.Api.DTOs;
+using GameStore.Api.DTOS;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GameStore.Api.Controllers
 {
@@ -85,6 +87,31 @@ namespace GameStore.Api.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
+        }
+
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe(UpdateMyUserRequest request)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim is null)
+                return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            var updatedUser = await _userService.UpdateMeAsync(
+                userId,
+                request.Email,
+                request.Password
+            );
+
+            return Ok(new
+            {
+                updatedUser.Id,
+                updatedUser.Name,
+                Email = updatedUser.Email.Value
+            });
         }
 
         [Authorize(Roles = "Admin")]

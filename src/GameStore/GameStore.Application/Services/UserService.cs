@@ -69,6 +69,36 @@ namespace GameStore.Application.Services
             return user;
         }
 
+
+        public async Task<User> UpdateMeAsync(
+            Guid userId,
+            string? email,
+            string? password)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user is null)
+                throw new NotFoundException("User not found.");
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                var emailVo = Email.Create(email);
+                user.UpdateEmail(emailVo);
+            }
+
+            if (!string.IsNullOrWhiteSpace(password))
+            {
+                PasswordValidator.Validate(password);
+                var passwordHash = PasswordHasher.Hash(password);
+                user.UpdatePassword(passwordHash);
+            }
+
+            await _userRepository.UpdateAsync(user);
+
+            return user;
+        }
+
+
         public async Task DeleteUserAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);

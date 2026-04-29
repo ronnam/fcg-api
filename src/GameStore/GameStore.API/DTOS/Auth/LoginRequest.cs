@@ -1,4 +1,4 @@
-﻿namespace GameStore.Api.DTOs;
+﻿namespace GameStore.Api.DTOS.Auth;
 
 public record LoginRequest(
     string Email,
