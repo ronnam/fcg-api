@@ -35,11 +35,11 @@ namespace GameStore.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var user = await GetByIdAsync(id);
             _context.Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

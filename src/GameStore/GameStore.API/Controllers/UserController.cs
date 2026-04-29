@@ -64,7 +64,7 @@ namespace GameStore.Api.Controllers
 
             _userService.DeleteUser(id);
 
-            return Ok();
+            return NoContent();
         }
     }
 }
