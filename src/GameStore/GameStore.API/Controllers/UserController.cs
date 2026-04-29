@@ -1,5 +1,5 @@
 ﻿using GameStore.Api.DTOS;
-using GameStore.Application.Service;
+using GameStore.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Api.Controllers

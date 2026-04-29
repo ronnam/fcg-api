@@ -1,40 +1,66 @@
-﻿using GameStore.Api.DTOS;
-using GameStore.Application.Service;
+﻿using GameStore.Api.DTOs;
+using GameStore.Api.DTOS;
+using GameStore.API.Security;
+using GameStore.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GameStore.Api.Controllers
+namespace GameStore.Api.Controllers;
+
+[ApiController]
+[Route("auth")]
+[Tags("Auth")]
+public class AuthController : ControllerBase
 {
+    private readonly UserService _userService;
+    private readonly AuthService _authService;
+    private readonly JwtTokenGenerator _jwtTokenGenerator;
 
-    [ApiController]
-    [Route("auth")]
-    [Tags("Auth")]
-    public class AuthController(UserService userService) : ControllerBase
+    public AuthController(
+        UserService userService,
+        AuthService authService,
+        JwtTokenGenerator jwtTokenGenerator)
     {
-        private readonly UserService _userService = userService;
+        _userService = userService;
+        _authService = authService;
+        _jwtTokenGenerator = jwtTokenGenerator;
+    }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterUserRequest request)
+    // POST /auth/register
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterUserRequest request)
+    {
+        var user = await _userService.RegisterAsync(
+            request.Name,
+            request.Email,
+            request.Password
+        );
+
+        return Ok(new
         {
-            var user = await _userService.RegisterAsync(
-                request.Name,
+            user.Id,
+            user.Name,
+            Email = user.Email.Value
+        });
+    }
+
+    // POST /auth/login
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginRequest request)
+    {
+        try
+        {
+            var user = await _authService.AuthenticateAsync(
                 request.Email,
                 request.Password
             );
 
-            return Ok(new
-            {
-                user.Id,
-                user.Name,
-                Email = user.Email.Value
-            });
-        }
+            var token = _jwtTokenGenerator.GenerateToken(user);
 
-        // POST /auth/login
-        [HttpPost("login")]
-        public IActionResult Login()
+            return Ok(new { token });
+        }
+        catch (ArgumentException ex)
         {
-            return Ok("Login endpoint (JWT later)");
+            return Unauthorized(new { error = ex.Message });
         }
     }
 }
-

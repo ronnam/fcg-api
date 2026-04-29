@@ -3,7 +3,7 @@ using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.ValueObjects;
 
-namespace GameStore.Application.Service
+namespace GameStore.Application.Services
 {
 
     public class UserService
