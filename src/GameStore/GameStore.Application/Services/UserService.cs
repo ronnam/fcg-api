@@ -1,6 +1,7 @@
 ﻿using GameStore.Application.Helpers;
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
+using GameStore.Domain.Exceptions;
 using GameStore.Domain.ValueObjects;
 using System.Threading.Tasks;
 
@@ -67,10 +68,15 @@ namespace GameStore.Application.Services
 
             return user;
         }
-        public void DeleteUser(Guid id)
-        {
-            _userRepository.Delete(id);
 
+        public async Task DeleteUserAsync(Guid id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user is null)
+                throw new NotFoundException("User not found.");
+
+            await _userRepository.DeleteAsync(user);
         }
     }
 }

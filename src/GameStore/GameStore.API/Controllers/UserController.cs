@@ -57,7 +57,7 @@ namespace GameStore.Api.Controllers
         [Authorize(Roles = "Admin")]
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateUserByAdmin(Guid id,UpdateUserByAdminRequest request)
+        public async Task<IActionResult> UpdateUserByAdmin(Guid id, UpdateUserByAdminRequest request)
         {
             try
             {
@@ -85,19 +85,21 @@ namespace GameStore.Api.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
+        }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var user = await _userService.GetByIdAsync(id);
-
-            if (user is null)
-                return NotFound();
-
-            _userService.DeleteUser(id);
-
-            return NoContent();
-
+            try
+            {
+                await _userService.DeleteUserAsync(id);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
         }
     }
 }
