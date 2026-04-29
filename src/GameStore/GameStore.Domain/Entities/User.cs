@@ -8,11 +8,11 @@ namespace GameStore.Domain.Entities;
 
 public class User
 {
-    public Guid Id { get; init; }
-    public required string Name { get; init; }
-    public required Email Email { get; init; }
-    public required string PasswordHash { get; init; }
-    public required string Role { get; init; }
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+    public Email Email { get; private set; }
+    public string PasswordHash { get; private set; }
+    public string Role { get; private set ; }
 
     private User() { }
 
@@ -54,5 +54,21 @@ public class User
 
         if (role != "User" && role != "Admin")
             throw new ArgumentException("Invalid role.");
+    }
+
+    public void UpdateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name is required.");
+
+        Name = name;
+    }
+
+    public void UpdateRole(string role)
+    {
+        if (role != "User" && role != "Admin")
+            throw new ArgumentException("Invalid role.");
+
+        Role = role;
     }
 }

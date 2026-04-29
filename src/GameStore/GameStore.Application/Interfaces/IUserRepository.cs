@@ -8,7 +8,7 @@ namespace GameStore.Application.Interfaces
         Task<User?> GetByEmailAsync(string email);
         Task<IEnumerable<User>> GetAllAsync();
         Task<User?> GetByIdAsync(Guid id);
-
+        Task UpdateAsync(User user);
     }
 }
 

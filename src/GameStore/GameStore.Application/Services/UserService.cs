@@ -5,7 +5,6 @@ using GameStore.Domain.ValueObjects;
 
 namespace GameStore.Application.Services
 {
-
     public class UserService
     {
         private readonly IUserRepository _userRepository;
@@ -44,8 +43,26 @@ namespace GameStore.Application.Services
         {
             return await _userRepository.GetByIdAsync(id);
         }
+        public async Task<User> UpdateByAdminAsync(
+            Guid userId,
+            string name,
+            string role)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
 
+            if (user is null)
+                throw new ArgumentException("User not found.");
 
+            if (role != "User" && role != "Admin")
+                throw new ArgumentException("Invalid role.");
+
+            user.UpdateName(name);
+            user.UpdateRole(role);
+
+            await _userRepository.UpdateAsync(user);
+
+            return user;
+        }
     }
 }
 

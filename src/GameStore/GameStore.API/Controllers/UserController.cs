@@ -52,6 +52,33 @@ namespace GameStore.Api.Controllers
                 user.Role
             });
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateUserByAdmin(Guid id,UpdateUserByAdminRequest request)
+        {
+            try
+            {
+                var user = await _userService.UpdateByAdminAsync(
+                    id,
+                    request.Name,
+
+                    request.Role
+                );
+
+                return Ok(new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Role
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
     }
 }
 
