@@ -66,7 +66,7 @@ namespace GameStore.Application.Services
             await _userRepository.UpdateAsync(user);
 
             return user;
-
+        }
         public void DeleteUser(Guid id)
         {
             _userRepository.Delete(id);
