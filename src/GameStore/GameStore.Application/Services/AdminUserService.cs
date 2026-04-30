@@ -3,6 +3,7 @@ using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using GameStore.Domain.ValueObjects;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace GameStore.Application.Services
@@ -10,10 +11,12 @@ namespace GameStore.Application.Services
     public class AdminUserService
     {
         private readonly IAdminUserRepository _adminUserRepository;
+        private readonly ILogger<AdminUserService> _logger;
 
-        public AdminUserService(IAdminUserRepository adminUserRepository)
+        public AdminUserService(IAdminUserRepository adminUserRepository, ILogger<AdminUserService> logger)
         {
             _adminUserRepository = adminUserRepository;
+            _logger = logger;
         }
         public async Task<User> RegisterAsync(
             string name,
@@ -33,15 +36,21 @@ namespace GameStore.Application.Services
 
             await _adminUserRepository.AddAsync(user);
 
+            _logger.LogInformation("Admin created user | UserId={UserId} | Email={Email}", user.Id,user.Email.Value);
+
             return user;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
+            _logger.LogInformation("Admin requested user list");
+
             return await _adminUserRepository.GetAllAsync();
         }
         public async Task<User?> GetByIdAsync(Guid id)
         {
+            _logger.LogInformation("Admin requested user details | UserId={UserId}",id);
+
             return await _adminUserRepository.GetByIdAsync(id);
         }
         public async Task<User> UpdateByAdminAsync(
@@ -51,8 +60,9 @@ namespace GameStore.Application.Services
             var user = await _adminUserRepository.GetByIdAsync(userId);
 
             if (user is null)
-                throw new NotFoundException("User not found.");
+            _logger.LogWarning("Admin attempted to update role of non-existing user | UserId={UserId}",userId);
 
+            throw new NotFoundException("User not found.");
 
             if (role != "User" && role != "Admin")
                 throw new ArgumentException("Invalid role.");
@@ -60,6 +70,8 @@ namespace GameStore.Application.Services
             user.UpdateRole(role);
 
             await _adminUserRepository.UpdateAsync(user);
+
+            _logger.LogInformation("Admin updated user role | UserId={UserId} | NewRole={Role}",user.Id,role);
 
             return user;
         }
@@ -69,9 +81,15 @@ namespace GameStore.Application.Services
             var user = await _adminUserRepository.GetByIdAsync(id);
 
             if (user is null)
+            {
+                _logger.LogWarning("Admin attempted to delete non-existing user | UserId={UserId}", id);
+
                 throw new NotFoundException("User not found.");
+            }
 
             await _adminUserRepository.DeleteAsync(user);
+
+            _logger.LogInformation("Admin deleted user | UserId={UserId} | Email={Email}",user.Id,user.Email.Value);
         }
     }
 }

@@ -3,22 +3,25 @@ using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using GameStore.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Application.Services
 {
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         public async Task<User> RegisterAsync(string name,string email,string password)
@@ -38,6 +41,12 @@ namespace GameStore.Application.Services
 
                 await _userRepository.AddAsync(user);
 
+                _logger.LogInformation(
+                    "User registered successfully | UserId={UserId} | Email={Email}",
+                    user.Id,
+                    user.Email.Value
+                );
+
                 return user;
             }
             catch (DbUpdateException)
@@ -53,7 +62,11 @@ namespace GameStore.Application.Services
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
+            {
+               _logger.LogWarning("Attempt to update non-existing user | UserId={UserId}", userId);
+
                 throw new NotFoundException("User not found.");
+            }
 
             PasswordValidator.Validate(password);
 
