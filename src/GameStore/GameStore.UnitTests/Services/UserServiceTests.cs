@@ -1,11 +1,12 @@
-﻿using System;
-using GameStore.Application.Interfaces;
+﻿using GameStore.Application.Interfaces;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using GameStore.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using Xunit;
 
 namespace GameStore.Tests.Services
@@ -13,12 +14,14 @@ namespace GameStore.Tests.Services
     public class UserServiceTests
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<ILogger<UserService>> _loggerMock;
         private readonly UserService _userService;
 
         public UserServiceTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
-            _userService = new UserService(_userRepositoryMock.Object);
+            _loggerMock = new Mock<ILogger<UserService>>();
+            _userService = new UserService(_userRepositoryMock.Object, _loggerMock.Object);
         }
 
         #region RegisterAsync
