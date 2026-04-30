@@ -1,18 +1,16 @@
 ﻿using GameStore.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.Application.Interfaces
 {
-    public interface IUserRepository
+    public interface IAdminUserRepository
     {
-        Task<User?> GetByEmailAsync(string email);
-        Task<User?> GetByIdAsync(Guid id);
         Task AddAsync(User user);
+        Task<User?> GetByEmailAsync(string email);
+        Task<IEnumerable<User>> GetAllAsync();
+        Task<User?> GetByIdAsync(Guid id);
         Task UpdateAsync(User user);
-
+        Task DeleteAsync(User user);
+       
     }
 }
+

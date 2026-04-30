@@ -29,12 +29,12 @@ public class User
     public static User Create(
         string name,
         Email email,
-        string passwordhash,
+        string passwordHash,
         string role = "User")
 
     {
-        Validate(name, email, passwordhash, role);
-        return new User(name, email, passwordhash, role);
+        Validate(name, email, passwordHash, role);
+        return new User(name, email, passwordHash, role);
     }
     private static void Validate(
         string name,
@@ -48,9 +48,6 @@ public class User
 
         if (string.IsNullOrWhiteSpace(passwordHash))
             throw new ArgumentException("Password is required.");
-
-        if (string.IsNullOrWhiteSpace(passwordHash))
-            throw new ArgumentException("Invalid Password.");
 
         if (role != "User" && role != "Admin")
             throw new ArgumentException("Invalid role.");
@@ -75,4 +72,13 @@ public class User
     {
         Email = email;
     }
+
+    public void UpdatePassword(string passwordHash)
+    {
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new ArgumentException("Password is required.");
+
+        PasswordHash = passwordHash;
+    }
+
 }
