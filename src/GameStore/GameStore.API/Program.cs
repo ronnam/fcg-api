@@ -1,8 +1,10 @@
+using GameStore.Api.Middlewares;
 using GameStore.API.Security;
 using GameStore.Application.Interfaces;
 using GameStore.Application.Services;
 using GameStore.Infrastructure.Persistence;
 using GameStore.Infrastructure.Repositories;
+using GameStore.Infrastructure.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -54,6 +56,9 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<JwtTokenGenerator>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
+builder.Services.AddScoped<AdminUserService>();
+
 
 //JWT
 
@@ -77,6 +82,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+
 // Swagger UI
 if (app.Environment.IsDevelopment())
 {
@@ -89,5 +99,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<GameStoreDbContext>();
+
+    await dbContext.Database.MigrateAsync();
+
+    await AdminUserSeed.SeedAsync(dbContext);
+}
 
 app.Run();

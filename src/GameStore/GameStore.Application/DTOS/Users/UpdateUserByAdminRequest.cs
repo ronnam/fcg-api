@@ -1,4 +1,4 @@
-﻿namespace GameStore.Api.DTOS;
+﻿namespace GameStore.Api.DTOS.Users;
 
 public record UpdateUserByAdminRequest(
     string Name,

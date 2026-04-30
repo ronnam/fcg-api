@@ -3,7 +3,12 @@ using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using GameStore.Domain.ValueObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.Application.Services
 {
@@ -16,68 +21,48 @@ namespace GameStore.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> RegisterAsync(
-            string name,
+        public async Task<User> RegisterAsync(string name,string email,string password)
+        {
+            try
+            {
+                PasswordValidator.Validate(password);
+
+                var passwordHash = PasswordHasher.Hash(password);
+                var emailVo = Email.Create(email);
+
+                var user = User.Create(
+                    name,
+                    emailVo,
+                    passwordHash
+                );
+
+                await _userRepository.AddAsync(user);
+
+                return user;
+            }
+            catch (DbUpdateException)
+            {
+                throw new ConflictException("Email already registered.");
+            }
+        }
+        public async Task<User> UpdateUserAsync(
+            Guid userId,
             string email,
             string password)
-        {
-            PasswordValidator.Validate(password);
-
-            var passwordHash = PasswordHasher.Hash(password);
-            var emailVo = Email.Create(email);
-
-            var user = User.Create(
-                name,
-                emailVo,
-                passwordHash
-            );
-
-            await _userRepository.AddAsync(user);
-
-            return user;
-        }
-
-        public async Task<IEnumerable<User>> GetAllAsync()
-        {
-            return await _userRepository.GetAllAsync();
-        }
-        public async Task<User?> GetByIdAsync(Guid id)
-        {
-            return await _userRepository.GetByIdAsync(id);
-        }
-        public async Task<User> UpdateByAdminAsync(
-            Guid userId,
-            string name,
-            string email,
-            string role)
         {
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
-                throw new ArgumentException("User not found.");
+                throw new NotFoundException("User not found.");
 
+            PasswordValidator.Validate(password);
 
-            if (role != "User" && role != "Admin")
-                throw new ArgumentException("Invalid role.");
-
-            user.UpdateName(name);
             user.UpdateEmail(Email.Create(email));
-            user.UpdateRole(role);
+            user.UpdatePassword(PasswordHasher.Hash(password));
 
             await _userRepository.UpdateAsync(user);
 
             return user;
         }
-
-        public async Task DeleteUserAsync(Guid id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-
-            if (user is null)
-                throw new NotFoundException("User not found.");
-
-            await _userRepository.DeleteAsync(user);
-        }
     }
 }
-

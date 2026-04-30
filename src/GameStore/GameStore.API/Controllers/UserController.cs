@@ -1,6 +1,5 @@
-﻿using GameStore.Api.DTOS;
+﻿using GameStore.Api.DTOS.Users;
 using GameStore.Application.Services;
-using GameStore.Domain.Entities;
 using GameStore.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ namespace GameStore.Api.Controllers
 {
     [ApiController]
     [Route("users")]
-    [Tags("User")]
+    [Tags("Users")]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
@@ -19,88 +18,29 @@ namespace GameStore.Api.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        [Authorize]
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> UpdateUser(Guid id,UpdateUserRequest request)
         {
-            var users = await _userService.GetAllAsync();
-
-            var response = users.Select(u => new
-            {
-                u.Id,
-                u.Name,
-                Email = u.Email.Value,
-                u.Role
-            });
-
-            return Ok(response);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetUserById(Guid id)
-        {
-            var user = await _userService.GetByIdAsync(id);
-
-            if (user is null)
-                return NotFound();
+            var user = await _userService.UpdateUserAsync(
+                id,
+                request.Email,
+                request.Password
+            );
 
             return Ok(new
             {
                 user.Id,
                 user.Name,
                 Email = user.Email.Value,
-                user.Role
+                Password = "********"
             });
-        }
-
-        [Authorize(Roles = "Admin")]
-
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateUserByAdmin(Guid id, UpdateUserByAdminRequest request)
-        {
-            try
-            {
-                var user = await _userService.UpdateByAdminAsync(
-                    id,
-                    request.Name,
-                    request.Email,
-                    request.Role
-                );
-
-                return Ok(new
-                {
-                    user.Id,
-                    user.Name,
-                    Email = user.Email.Value,
-                    user.Role
-                });
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
-
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            try
-            {
-                await _userService.DeleteUserAsync(id);
-                return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { error = ex.Message });
-            }
         }
     }
 }
-

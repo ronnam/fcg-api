@@ -1,7 +1,7 @@
-﻿
-using GameStore.Application.Helpers;
+﻿using GameStore.Application.Helpers;
 using GameStore.Application.Interfaces;
 using GameStore.Domain.Entities;
+using GameStore.Domain.Exceptions;
 
 namespace GameStore.Application.Services;
 
@@ -22,7 +22,7 @@ public class AuthService
             throw new ArgumentException("Invalid credentials.");
 
         if (!PasswordHasher.Verify(password, user.PasswordHash))
-            throw new ArgumentException("Invalid credentials.");
+            throw new UnauthorizedException("Invalid credentials.");
 
         return user;
     }

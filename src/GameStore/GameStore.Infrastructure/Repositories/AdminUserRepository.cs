@@ -2,18 +2,13 @@
 using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.Infrastructure.Repositories
 {
-
-    public class UserRepository(GameStoreDbContext context) : IUserRepository
+    public class AdminUserRepository(GameStoreDbContext context) : IAdminUserRepository
     {
         private readonly GameStoreDbContext _context = context;
+
         public async Task AddAsync(User user)
         {
             _context.Users.Add(user);
@@ -24,9 +19,16 @@ namespace GameStore.Infrastructure.Repositories
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Email.Value == email);
         }
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<User?> GetByIdAsync(Guid id)
         {
             return await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -35,5 +37,12 @@ namespace GameStore.Infrastructure.Repositories
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(User user)
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
