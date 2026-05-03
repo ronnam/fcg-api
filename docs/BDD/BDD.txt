@@ -1,0 +1,55 @@
+Feature: User Management
+
+  As a system user
+  I want to register and update my account
+  So that I can access the system and keep my data up to date
+  
+  
+RegisterAsync_ShouldCreateUser_WhenDataIsValid
+
+  Given the email is not registered
+  And the password meets the security requirements
+  When the user registers with name, email, and password
+  Then the system should create the user successfully
+  And the user data should be persisted
+  
+RegisterAsync_ShouldThrowConflictException_WhenEmailAlreadyExists
+
+  Given a user is already registered with a specific email
+  When a new registration is attempted with the same email
+  Then the system should reject the registration
+  And return a conflict error
+
+RegisterAsync_ShouldThrowArgumentException_WhenPasswordIsInvalid
+
+  Given the password does not meet the security requirements
+  When the user attempts to register
+  Then the system should reject the registration
+  And return a validation error
+
+UpdateUserAsync_ShouldUpdateUser_WhenUserExists
+
+  Given an existing user is registered
+  And the new password meets the security requirements
+  When the user updates their email and password
+  Then the system should update the user successfully
+  And persist the updated data
+
+UpdateUserAsync_ShouldThrowNotFoundException_WhenUserDoesNotExist
+
+  Given no user exists with the provided identifier
+  When an update is requested
+  Then the system should reject the operation
+  And return a not found erro
+
+UpdateUserAsync_ShouldThrowArgumentException_WhenPasswordIsInvalid
+
+  Given an existing user is registered
+  And the provided password is invalid
+  When the user attempts to update their password
+  Then the system should reject the update
+  And return a validation error
+
+
+
+
