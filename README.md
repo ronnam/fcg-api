@@ -1,124 +1,142 @@
-# fcg-api
-# GameStore API
+🎮 GameStore API – Fase 1
+API REST desenvolvida em .NET 8 como parte do Desafio da Fase 1 da disciplina Arquitetura de Sistemas .NET – FIAP.
+O objetivo do projeto é gerenciar usuários e jogos adquiridos, servindo como base para futuras funcionalidades da plataforma de games educacionais da FIAP (FCG).
 
-API REST desenvolvida em **ASP.NET Core** para gerenciamento de usuários e autenticação, com **controle de acesso por níveis (User e Admin)**, **JWT**, **Swagger/OpenAPI**, **Entity Framework Core** e **tratamento global de erros com logs estruturados**.
+📌 Objetivo do Projeto
+Construir uma API REST seguindo boas práticas de desenvolvimento, garantindo:
 
-## Funcionalidades
+Persistência de dados
+Organização e separação de responsabilidades
+Qualidade de código
+Base escalável para próximas fases (matchmaking, servidores, etc.)
 
-### Autenticação e Autorização
+🛠️ Tecnologias Utilizadas
 
-- Registro de usuários
-- Login com retorno de **JWT**
-- Autorização baseada em **roles**
-    - `User`
-    - `Admin`
+.NET 8
+ASP.NET Core Web API
+Entity Framework Core
+SQLite (ambiente de desenvolvimento)
+JWT (JSON Web Token) para autenticação
+Swagger / OpenAPI
+Arquitetura em camadas (Clean Architecture)
 
-### Usuários
+🧱 Arquitetura do Projeto
+O projeto está organizado seguindo uma separação clara de responsabilidades:
+GameStore
+│
+├── GameStore.Api
+│   ├── Controllers
+│   ├── Middlewares
+│   ├── Program.cs
+│   └── appsettings.json
+│
+├── GameStore.Application
+│   ├── Services
+│   ├── Interfaces
+│   ├── Helpers
+│   └── DTOs
+│
+├── GameStore.Domain
+│   ├── Entities
+│   ├── ValueObjects
+│   └── Exceptions
+│
+└── GameStore.Infrastructure
+    ├── Persistence
+    ├── Repositories
+    └── Seed
 
-- Listar usuários (**Admin**)
-- Buscar usuário por ID (**Admin**)
-- Atualizar usuário (**Admin**)
-- Atualizar dados do próprio usuário (**User**)
-- Remover usuário (**Admin**)
+🔹 Camadas
 
-### Segurança
+Api: Controllers, autenticação, middlewares e configuração da aplicação
+Application: Serviços de aplicação e regras de negócio
+Domain: Entidades, Value Objects e exceções de domínio
+Infrastructure: Acesso a dados, repositórios e EF Core
 
-- Autenticação via **JWT Bearer**
-- Controle de acesso com `[Authorize]` e `[Authorize(Roles = "Admin")]`
-- Middleware global para tratamento de exceções
-- Logs estruturados usando `ILogger`
+🔐 Autenticação
+A autenticação é realizada por JWT.
+Endpoints protegidos exigem o envio do token no header:
+Authorization: Bearer {seu_token}
 
-### Documentação
+🔗 Endpoints Principais
+✅ Autenticação
+🔹 Login
+POST /auth/login
 
-- **Swagger / OpenAPI** para documentação automática
-- Interface interativa para testes da API
+Body:
+JSON{  "email": "user@email.com",  "password": "Senha@123"}Show more lines
 
----
+👤 Usuários
+🔹 Criar usuário
+POST /users
 
-## Arquitetura
+Body:
+JSON{  "name": "João",  "email": "joao@email.com",  "password": "Senha@123"}Show more lines
 
-O projeto segue uma separação clara de responsabilidades
+🔹 Listar usuários
+GET /users
 
-Camadas principais
-- **Api**: Controllers, Middlewares, configuração e autenticação
-- **Application**: Serviços de negócio
-- **Domain**: Entidades, Value Objects e exceções de domínio
-- **Infrastructure**: Repositórios e acesso a dados (EF Core)
+🔹 Buscar usuário por ID
+GET /users/{id}
 
-## Níveis de Acesso
+🛡️ Administração (Acesso restrito a Admin)
+🔹 Listar usuários (Admin)
+GET /admin/users
 
-### User
+🔹 Atualizar role do usuário
+PUT /admin/users/{id}/role
 
-- Pode se autenticar na plataforma
-- Pode alterar seus próprios dados (ex: email, senha)
+Body:
+JSON{  "role": "Admin"}``Show more lines
+Roles possíveis:
 
-### Admin
+User
+Admin
 
-- Pode listar usuários
-- Pode administrar usuários (alterar dados e role)
-- Pode remover usuários
-
-> **Por padrão, todo usuário registrado é criado como `User`.**
-> O papel `Admin` é atribuído posteriormente por outro administrador ou via seed/manualmente no banco, garantindo maior segurança.
+🔹 Remover usuário
+DELETE /admin/users/{id}
 
 
-## Autenticação com JWT
+🧪 Swagger
+A documentação interativa da API pode ser acessada em:
+/swagger
 
-Após o login (`POST /auth/login`), o usuário recebe um token JWT.
+Exemplo:
+https://localhost:5001/swagger
 
-Esse token deve ser enviado nas requisições protegidas.
 
-As roles são incluídas como **claims** no token e utilizadas pelo ASP.NET Core para controle de acesso.
+▶️ Como Executar o Projeto
+Clone o repositório:
+Shellgit clone <url-do-repositorio>Show more lines
 
-## Testes e Documentação com Swagger
+Acesse a pasta do projeto:
+Shellcd GameStoreShow more lines
 
-Através do Swagger é possível:
+Execute a aplicação:
+Shelldotnet runShow more lines
 
-- Visualizar todos os endpoints
-- Ver parâmetros e respostas esperadas
-- Testar requisições diretamente pela interface
-- Autenticar usando JWT via botão **Authorize**
+Abra o navegador em:
+https://localhost:5001/swagger
 
-## Tratamento de Erros
+📂 Banco de Dados
 
-A API utiliza um **middleware global de exceções**, responsável por:
+Utiliza SQLite em ambiente de desenvolvimento
+O banco é criado automaticamente via Entity Framework Migrations
+Localização padrão:
+bin/Debug/net8.0/gamestore.db
 
-- Capturar exceções de domínio (ex: `NotFoundException`)
-- Traduzir exceções para status HTTP adequados (404, 400, 500)
-- Retornar respostas JSON padronizadas
-- Registrar logs estruturados
+📌 Observações Importantes
 
-## Logs Estruturados
+Esta API representa um MVP (Minimum Viable Product)
+Algumas funcionalidades serão expandidas nas próximas fases
+O projeto foi desenvolvido com foco em qualidade, clareza e extensibilidade
 
-Os logs são registrados usando `ILogger`, permitindo:
 
-- Logs de erro (`LogError`)
-- Logs de aviso (`LogWarning`)
-- Logs com contexto da requisição
-- Identificação de erros via `traceId`
+👥 Squad 8 – Turma 12NETT
+Integrantes:
 
-## Banco de Dados
-
-- **SQLite**
-- **Entity Framework Core**
-- Criação e versionamento do banco via **Migrations**
-
-## Como Executar o Projeto
-
-### Pré-requisitos
-
-- .NET SDK 8 ou superior
-- SQLite
-- EF Core CLI (opcional)
-
-## Considerações Finais
-
-Este projeto foi desenvolvido com foco em:
-
-- Boas práticas REST
-- Segurança
-- Clareza arquitetural
-- Facilidade de manutenção
-- Escalabilidade
-
-Atende aos requisitos propostos e segue padrões amplamente utilizados em aplicações .NET modernas.
+Heloa Guizzo Cardoso
+Luiz Gustavo Dionizio Soares
+Yan Santos Wendt
+Luiz Valmir Teixeira Braga Junior
+Ronnam de Lima da Silva
