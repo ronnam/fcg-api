@@ -53,16 +53,19 @@ namespace GameStore.Application.Services
 
             return await _adminUserRepository.GetByIdAsync(id);
         }
-        public async Task<User> UpdateByAdminAsync(
-            Guid userId,
-            string role)
+
+        public async Task<User> UpdateByAdminAsync(Guid userId, string role)
         {
             var user = await _adminUserRepository.GetByIdAsync(userId);
 
             if (user is null)
-            _logger.LogWarning("Admin attempted to update role of non-existing user | UserId={UserId}",userId);
-
-            throw new NotFoundException("User not found.");
+            {
+                _logger.LogWarning(
+                    "Admin attempted to update role of non-existing user | UserId={UserId}",
+                    userId
+                );
+                throw new NotFoundException("User not found.");
+            }
 
             if (role != "User" && role != "Admin")
                 throw new ArgumentException("Invalid role.");
@@ -71,7 +74,11 @@ namespace GameStore.Application.Services
 
             await _adminUserRepository.UpdateAsync(user);
 
-            _logger.LogInformation("Admin updated user role | UserId={UserId} | NewRole={Role}",user.Id,role);
+            _logger.LogInformation(
+                "Admin updated user role | UserId={UserId} | NewRole={Role}",
+                user.Id,
+                role
+            );
 
             return user;
         }
