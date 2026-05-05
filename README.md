@@ -115,6 +115,7 @@ Após o login (`POST /auth/login`), o usuário recebe um **token JWT**, que deve
 
 ```http
 Authorization: Bearer {token}
+```
 As roles são incluídas como claims no token e utilizadas pelo ASP.NET Core para controle de acesso aos endpoints.
 
 ## 🔗 Endpoints Principais
