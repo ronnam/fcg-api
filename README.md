@@ -78,7 +78,10 @@ GameStore
     ├── Repositories
     └── Seed
 
-## 🔐 Segurança
+```markdown
+---
+
+## 🔐 **Segurança**
 
 - Autenticação via **JWT Bearer**
 - Controle de acesso utilizando:
@@ -116,6 +119,7 @@ Authorization: Bearer {token}
 As roles são incluídas como claims no token e utilizadas pelo ASP.NET Core para controle de acesso aos endpoints.
 
 ## 🔗 Endpoints Principais
+
 ✅ Autenticação
 Login
 POST /auth/login
@@ -124,6 +128,7 @@ Body
 JSON{  "email": "user@email.com",  "password": "Senha@123"}Show more lines
 
 ## 👤 Usuários
+
 Criar usuário
 POST /users
 
@@ -136,6 +141,7 @@ GET /users/{id}
 
 
 ## 🛡️ Administração (Admin)
+
 Listar usuários
 GET /admin/users
 
@@ -153,6 +159,7 @@ DELETE /admin/users/{id}
 
 
 ## 📘 Documentação e Testes
+
 Swagger / OpenAPI
 A API possui documentação automática gerada com Swagger, disponível em:
 /swagger
@@ -166,6 +173,7 @@ Autenticar usando JWT pelo botão Authorize
 
 
 ## ⚠️ Tratamento de Erros
+
 A API utiliza um middleware global de exceções, responsável por:
 
 Capturar exceções de domínio (ex: NotFoundException)
@@ -175,6 +183,7 @@ Registrar logs estruturados
 
 
 ## 🪵 Logs Estruturados
+
 Os logs são registrados com ILogger, permitindo:
 
 Logs de erro (LogError)
@@ -192,6 +201,7 @@ Arquivo do banco gerado automaticamente em ambiente de desenvolvimento
 
 
 ## ▶️ Como Executar o Projeto
+
 Pré-requisitos
 
 .NET SDK 8 ou superior
@@ -204,6 +214,7 @@ https://localhost:5001/swagger
 
 
 ## ✅ Considerações Finais
+
 Este projeto foi desenvolvido com foco em:
 
 Boas práticas REST
@@ -214,6 +225,7 @@ Escalabilidade para futuras fases do desafio
 
 
 ## 👥 Squad 8 – Turma 12NETT
+
 Integrantes
 
 Heloa Guizzo Cardoso
